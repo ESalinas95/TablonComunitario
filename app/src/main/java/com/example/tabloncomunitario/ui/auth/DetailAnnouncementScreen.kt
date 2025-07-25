@@ -1,4 +1,4 @@
-package com.example.tabloncomunitario.ui.auth // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.ui.auth
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -28,7 +28,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.tabloncomunitario.Announcement
 import com.example.tabloncomunitario.Comment
 import com.example.tabloncomunitario.viewmodel.DetailAnnouncementUiState
-import com.example.tabloncomunitario.R // Importa tu R para los drawables (ej. ic_back_arrow, ic_default_profile)
+import com.example.tabloncomunitario.R
 import com.example.tabloncomunitario.User
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -43,15 +43,15 @@ fun DetailAnnouncementScreen(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onCommentAuthorClick: (String) -> Unit,
-    onNavigateBack: () -> Unit // <--- ¡CALLBACK PARA LA FLECHA DE RETROCESO!
+    onNavigateBack: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Detalles del Anuncio") },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) { // <--- ¡CONECTADO AL CALLBACK!
-                        Icon(painterResource(id = R.drawable.ic_back_arrow), contentDescription = "Atrás") // Asegúrate de que el ID del drawable sea correcto
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(painterResource(id = R.drawable.ic_back_arrow), contentDescription = "Atrás")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -67,8 +67,8 @@ fun DetailAnnouncementScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(scrollState) // Scroll para todo el contenido
-                .padding(16.dp) // Padding general para la columna
+                .verticalScroll(scrollState)
+                .padding(16.dp)
         ) {
             uiState.announcement?.let { announcement ->
                 // Título del Anuncio
@@ -144,8 +144,6 @@ fun DetailAnnouncementScreen(
                     Spacer(Modifier.height(24.dp))
                 }
 
-
-                // Separador para Comentarios
                 Divider(modifier = Modifier.padding(vertical = 16.dp))
 
                 // Sección de Comentarios
@@ -206,8 +204,6 @@ fun DetailAnnouncementScreen(
     }
 }
 
-
-// Reutilizamos el Composable CommentItem que se definirá en este archivo
 @Composable
 fun CommentItem(comment: Comment, onCommentAuthorClick: (String) -> Unit) {
     Card(

@@ -1,8 +1,8 @@
-package com.example.tabloncomunitario.repository // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.repository
 
-import com.example.tabloncomunitario.Comment // Importa tu clase Comment
-import com.example.tabloncomunitario.database.CommentDao // Importa tu CommentDao
-import kotlinx.coroutines.flow.Flow // Importa Flow
+import com.example.tabloncomunitario.Comment
+import com.example.tabloncomunitario.database.CommentDao
+import kotlinx.coroutines.flow.Flow
 
 class CommentRepository(private val commentDao: CommentDao) {
 

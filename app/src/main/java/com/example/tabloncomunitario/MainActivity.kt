@@ -1,4 +1,4 @@
-package com.example.tabloncomunitario // ¡IMPORTANTE! Asegúrate de que este sea tu nombre de paquete correcto
+package com.example.tabloncomunitario
 
 import android.content.ContentValues.TAG
 import android.os.Bundle
@@ -23,21 +23,6 @@ import com.example.tabloncomunitario.repository.AnnouncementRepository
 import com.example.tabloncomunitario.repository.UserRepository
 import com.example.tabloncomunitario.repository.CommentRepository
 import com.example.tabloncomunitario.navigation.AppDestinations
-
-// --- ELIMINADAS: Importaciones de los canales/flows y launchers ---
-// import android.content.Intent
-// import android.net.Uri
-// import androidx.activity.result.ActivityResultLauncher
-// import androidx.activity.result.contract.ActivityResultContracts
-// import kotlinx.coroutines.channels.Channel
-// import kotlinx.coroutines.flow.MutableSharedFlow
-// import kotlinx.coroutines.flow.SharedFlow
-// import kotlinx.coroutines.flow.receiveAsFlow
-// import kotlinx.coroutines.flow.collectLatest
-// --- FIN ELIMINADAS ---
-
-
-// Importa tus Composables de UI (asegúrate de que los paquetes sean correctos)
 import com.example.tabloncomunitario.ui.auth.AuthScreen
 import com.example.tabloncomunitario.ui.auth.MainScreen
 import com.example.tabloncomunitario.ui.auth.SetupProfileScreen
@@ -46,8 +31,6 @@ import com.example.tabloncomunitario.ui.auth.AddAnnouncementScreen
 import com.example.tabloncomunitario.ui.auth.ProfileScreen
 import com.example.tabloncomunitario.ui.auth.EditProfileScreen
 import com.example.tabloncomunitario.ui.auth.UserProfilePreviewScreen
-
-// Importa tus ViewModels y sus Factories (asegúrate de que los paquetes sean correctos)
 import com.example.tabloncomunitario.viewmodel.AuthViewModel
 import com.example.tabloncomunitario.viewmodel.AuthViewModelFactory
 import com.example.tabloncomunitario.viewmodel.SetupProfileViewModel
@@ -64,23 +47,10 @@ import com.example.tabloncomunitario.viewmodel.DetailAnnouncementViewModel
 import com.example.tabloncomunitario.viewmodel.DetailAnnouncementViewModelFactory
 import com.example.tabloncomunitario.viewmodel.UserProfilePreviewViewModel
 import com.example.tabloncomunitario.viewmodel.UserProfilePreviewViewModelFactory
-
-// Importa eventos de navegación
 import com.example.tabloncomunitario.viewmodel.AuthNavigationEvent
-
-
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-
-
-// --- ELIMINADAS: Declaraciones de Channels y Flows globales ---
-// val imagePickRequestChannel = Channel<String>(Channel.BUFFERED)
-// val imagePickRequestFlow = imagePickRequestChannel.receiveAsFlow()
-// val imagePickResultFlow = MutableSharedFlow<Pair<String, Uri?>>()
-// --- FIN ELIMINADAS ---
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -89,28 +59,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var announcementRepository: AnnouncementRepository
     private lateinit var commentRepository: CommentRepository
     private lateinit var storage: FirebaseStorage
-
-    // --- ELIMINADO: Launcher de Activity para selección de imagen ---
-    // private var currentImagePickRequestId: String? = null
-    // private val pickImageLauncher: ActivityResultLauncher<Intent> =
-    //     registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-    //         val requestId = currentImagePickRequestId ?: "unknown_request_id"
-    //         currentImagePickRequestId = null
-    //         if (result.resultCode == Activity.RESULT_OK) {
-    //             val uri = result.data?.data
-    //             lifecycleScope.launch {
-    //                 imagePickResultFlow.emit(requestId to uri)
-    //             }
-    //             Log.d(TAG, "ActivityResult: Imagen seleccionada: $uri para request $requestId")
-    //         } else {
-    //             lifecycleScope.launch {
-    //                 imagePickResultFlow.emit(requestId to null)
-    //             }
-    //             Log.d(TAG, "ActivityResult: Selección de imagen cancelada para request $requestId")
-    //         }
-    //     }
-    // --- FIN ELIMINADO ---
-
 
     companion object {
         private const val TAG = "MainActivityHost"
@@ -126,25 +74,6 @@ class MainActivity : AppCompatActivity() {
         userRepository = UserRepository(database.userDao())
         announcementRepository = AnnouncementRepository(database.announcementDao())
         commentRepository = CommentRepository(database.commentDao())
-
-        // --- ELIMINADO: Observar el Flow de peticiones de imagen ---
-        // lifecycleScope.launch {
-        //     imagePickRequestFlow.collectLatest { requestId ->
-        //         Log.d(TAG, "MainActivity: Petición de imagen recibida para requestId: $requestId")
-        //         currentImagePickRequestId = requestId
-        //         val intent = Intent(Intent.ACTION_GET_CONTENT).apply { type = "image/*" }
-        //         if (intent.resolveActivity(packageManager) != null) {
-        //             pickImageLauncher.launch(intent)
-        //             Log.d(TAG, "MainActivity: Lanzando selector de imagen para request $requestId")
-        //         } else {
-        //             Toast.makeText(this@MainActivity, "No se encontró aplicación para seleccionar imágenes.", Toast.LENGTH_LONG).show()
-        //             Log.e(TAG, "No se encontró aplicación para manejar el Intent ACTION_GET_CONTENT para request $requestId.")
-        //             imagePickResultFlow.emit(requestId to null)
-        //         }
-        //     }
-        // }
-        // --- FIN ELIMINADO ---
-
 
         // Configurar la UI con Jetpack Compose y el NavHost
         setContent {
@@ -185,7 +114,6 @@ fun AppNavHost(
     commentRepository: CommentRepository,
     storage: FirebaseStorage
 ) {
-    // ELIMINADO: val scope = rememberCoroutineScope() // Ya no es necesario si no se emite directamente aquí
 
     NavHost(navController = navController, startDestination = startDestination) {
 
@@ -278,10 +206,8 @@ fun AppNavHost(
                 onApartmentNumberChange = { setupProfileViewModel.onApartmentNumberChange(it) },
                 onAboutMeChange = { setupProfileViewModel.onAboutMeChange(it) },
                 onSelectImageClick = {
-                    // --- CAMBIO CLAVE AQUÍ: Revertido a mensaje ---
                     Toast.makeText(navController.context, "Esta funcionalidad aún no se encuentra implementada.", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "Seleccionar imagen de anuncio - revertido a mensaje.")
-                    // --- FIN CAMBIO CLAVE ---
                 },
                 onSaveProfileClick = { setupProfileViewModel.saveProfileInformation() }
             )
@@ -405,10 +331,8 @@ fun AppNavHost(
                 onTitleChange = { addAnnouncementViewModel.onTitleChange(it) },
                 onDescriptionChange = { addAnnouncementViewModel.onDescriptionChange(it) },
                 onSelectImageClick = {
-                    // --- CAMBIO CLAVE AQUÍ: Revertido a mensaje ---
                     Toast.makeText(navController.context, "Esta funcionalidad aún no se encuentra implementada.", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "Seleccionar imagen de anuncio - revertido a mensaje.")
-                    // --- FIN CAMBIO CLAVE ---
                 },
                 onPublishClick = { addAnnouncementViewModel.saveAnnouncementInformation() },
                 onNavigateBack = { navController.popBackStack() }

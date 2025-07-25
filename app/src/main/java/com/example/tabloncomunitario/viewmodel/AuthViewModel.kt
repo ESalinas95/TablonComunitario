@@ -2,7 +2,6 @@ package com.example.tabloncomunitario.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tabloncomunitario.User
 import com.example.tabloncomunitario.repository.UserRepository
@@ -10,16 +9,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import kotlinx.coroutines.flow.MutableSharedFlow // <-- Importar MutableSharedFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow // <-- Importar SharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow // <-- Importar asSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-// Define el estado de la UI para la pantalla de autenticación (sin navigateToSetupProfile)
 data class AuthUiState(
     val emailInput: String = "",
     val passwordInput: String = "",
@@ -43,10 +41,8 @@ class AuthViewModel(
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
-    // --- NUEVO: SharedFlow para eventos de navegación ---
     private val _navigationEvents = MutableSharedFlow<AuthNavigationEvent>()
     val navigationEvents: SharedFlow<AuthNavigationEvent> = _navigationEvents.asSharedFlow()
-    // --- FIN NUEVO ---
 
     companion object {
         private const val TAG = "AuthViewModel"
@@ -90,7 +86,7 @@ class AuthViewModel(
                         isLoading = false,
                         isAuthenticated = true // Sigue siendo true hasta que se haga signOut
                     )
-                    _navigationEvents.emit(AuthNavigationEvent.NavigateToSetupProfile(firebaseUser.uid)) // <-- EMITIR EVENTO
+                    _navigationEvents.emit(AuthNavigationEvent.NavigateToSetupProfile(firebaseUser.uid))
                 } else {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
@@ -138,9 +134,4 @@ class AuthViewModel(
             }
         }
     }
-
-    // ELIMINADO: navigationCompleted() ya no es necesario
-    // fun navigationCompleted() {
-    //     _uiState.value = _uiState.value.copy(navigateToSetupProfile = false)
-    // }
 }

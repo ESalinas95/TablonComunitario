@@ -1,4 +1,4 @@
-package com.example.tabloncomunitario.database // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.database
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -9,8 +9,8 @@ import com.example.tabloncomunitario.User // Importa tu clase User
 
 @Dao
 interface UserDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE) // Si el usuario ya existe, lo reemplaza
-    suspend fun insertUser(user: User) // 'suspend' para Coroutines
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUser(user: User)
 
     @Update
     suspend fun updateUser(user: User)
@@ -18,12 +18,12 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE uid = :userId")
     suspend fun getUserById(userId: String): User?
 
-    @Query("SELECT * FROM users LIMIT 1") // Útil si solo esperas un usuario o el usuario actual
+    @Query("SELECT * FROM users LIMIT 1")
     suspend fun getCurrentUser(): User?
 
     @Query("DELETE FROM users WHERE uid = :userId")
     suspend fun deleteUser(userId: String)
 
     @Query("DELETE FROM users")
-    suspend fun deleteAllUsers() // Para limpiar la tabla
+    suspend fun deleteAllUsers()
 }

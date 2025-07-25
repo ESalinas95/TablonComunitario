@@ -1,7 +1,7 @@
-package com.example.tabloncomunitario // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario
 
 import android.content.Intent
-import android.util.Log // Importa Log
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CommentAdapter(private var comments: MutableList<Comment>) : // <--- CAMBIADO DE 'val' a 'var'
+class CommentAdapter(private var comments: MutableList<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     companion object {
@@ -55,7 +55,6 @@ class CommentAdapter(private var comments: MutableList<Comment>) : // <--- CAMBI
             holder.authorImageView.setImageResource(R.drawable.ic_default_profile)
         }
 
-        // Listener para la vista previa del perfil del autor del comentario
         val clickListener = View.OnClickListener {
             Log.d(TAG, "Clic en autor de comentario: ${comment.authorDisplayName}")
             if (comment.authorId.isNullOrEmpty()) {

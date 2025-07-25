@@ -1,9 +1,7 @@
-// viewmodel/profile/ProfileViewModel.kt
-package com.example.tabloncomunitario.viewmodel // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tabloncomunitario.Announcement
 import com.example.tabloncomunitario.User
@@ -16,7 +14,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-// Mueve esta data class (ProfileUiState) de ui.profile.ProfileScreen.kt a este archivo
 data class ProfileUiState(
     val userProfile: User? = null,
     val myAnnouncements: List<Announcement> = emptyList(),
@@ -37,7 +34,6 @@ class ProfileViewModel(
         private const val TAG = "ProfileViewModel"
     }
 
-    // Llama a esta función desde el Composable (ej. en LaunchedEffect) para iniciar la carga
     fun loadProfileAndAnnouncements(userId: String) {
         if (_uiState.value.userProfile == null || _uiState.value.myAnnouncements.isEmpty()) {
             _uiState.value = _uiState.value.copy(isLoading = true, statusMessage = null)
@@ -49,9 +45,6 @@ class ProfileViewModel(
         }
     }
 
-    /**
-     * Carga el perfil del usuario actual desde Room y actualiza el estado.
-     */
     private fun loadAndDisplayUserProfile(userId: String) {
         viewModelScope.launch {
             try {
@@ -73,9 +66,6 @@ class ProfileViewModel(
         }
     }
 
-    /**
-     * Carga los anuncios del autor actual desde Room y actualiza el estado.
-     */
     private fun loadMyAnnouncements(userId: String) {
         viewModelScope.launch {
             announcementRepository.getAnnouncementsByAuthor(userId).collectLatest { newAnnouncements ->

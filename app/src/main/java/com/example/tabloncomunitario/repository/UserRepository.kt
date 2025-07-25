@@ -1,7 +1,7 @@
-package com.example.tabloncomunitario.repository // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.repository
 
-import com.example.tabloncomunitario.User // Importa tu clase User
-import com.example.tabloncomunitario.database.UserDao // Importa tu UserDao
+import com.example.tabloncomunitario.User
+import com.example.tabloncomunitario.database.UserDao
 
 class UserRepository(private val userDao: UserDao) {
 

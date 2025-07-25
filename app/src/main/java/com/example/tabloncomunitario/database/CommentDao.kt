@@ -1,4 +1,4 @@
-package com.example.tabloncomunitario.database // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.database
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Delete
-import com.example.tabloncomunitario.Comment // Importa tu clase Comment
+import com.example.tabloncomunitario.Comment
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -26,7 +26,6 @@ interface CommentDao {
     @Query("DELETE FROM comments WHERE id = :commentId")
     suspend fun deleteCommentById(commentId: Long)
 
-    // Obtener todos los comentarios para un anuncio específico, ordenados por timestamp
     @Query("SELECT * FROM comments WHERE announcementId = :announcementId ORDER BY timestamp ASC")
     fun getCommentsForAnnouncement(announcementId: String): Flow<List<Comment>>
 

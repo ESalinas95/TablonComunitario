@@ -1,4 +1,4 @@
-package com.example.tabloncomunitario // Asegúrate de que tu paquete sea correcto
+package com.example.tabloncomunitario
 
 import android.app.Activity
 import android.content.Intent
@@ -8,12 +8,10 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope // Importar lifecycleScope
-import androidx.compose.runtime.getValue // Importar para 'by mutableStateOf'
-import androidx.compose.runtime.mutableStateOf // Importar para 'by mutableStateOf'
-import androidx.compose.runtime.setValue // Importar para 'by mutableStateOf'
-import androidx.compose.material3.MaterialTheme // Importar MaterialTheme
-import androidx.activity.compose.setContent // Importar setContent
+import androidx.lifecycle.lifecycleScope
+import androidx.compose.runtime.getValue
+import androidx.compose.material3.MaterialTheme
+import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
 import com.example.tabloncomunitario.database.AppDatabase
@@ -22,11 +20,11 @@ import com.example.tabloncomunitario.repository.CommentRepository
 import com.example.tabloncomunitario.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import com.example.tabloncomunitario.ui.auth.DetailAnnouncementScreen // <--- Importa tu Composable
-import com.example.tabloncomunitario.viewmodel.DetailAnnouncementViewModel // <--- Importa tu ViewModel
-import com.example.tabloncomunitario.viewmodel.DetailAnnouncementViewModelFactory // <--- Importa tu Factory
-import kotlinx.coroutines.flow.collectLatest // Importar collectLatest
-import kotlinx.coroutines.launch // Importar launch
+import com.example.tabloncomunitario.ui.auth.DetailAnnouncementScreen
+import com.example.tabloncomunitario.viewmodel.DetailAnnouncementViewModel
+import com.example.tabloncomunitario.viewmodel.DetailAnnouncementViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class DetailAnnouncementActivity : AppCompatActivity() {
 
@@ -36,16 +34,7 @@ class DetailAnnouncementActivity : AppCompatActivity() {
     private lateinit var userRepository: UserRepository
     private lateinit var announcementRepository: AnnouncementRepository
     private lateinit var commentRepository: CommentRepository
-    private lateinit var detailAnnouncementViewModel: DetailAnnouncementViewModel // Instancia del ViewModel
-
-    // No necesitamos más estados aquí, el ViewModel los gestiona
-    // private var currentAnnouncementState by mutableStateOf<Announcement?>(null)
-    // private var commentsState by mutableStateOf<List<Comment>>(emptyList())
-    // private var commentInputState by mutableStateOf("")
-    // private var isLoadingState by mutableStateOf(false)
-    // private var statusMessageState by mutableStateOf<String?>(null)
-    // private var isAuthorState by mutableStateOf(false)
-    // private var canEditDeleteState by mutableStateOf(true)
+    private lateinit var detailAnnouncementViewModel: DetailAnnouncementViewModel
 
     companion object {
         private const val TAG = "DetailAnnouncementAct"
@@ -53,12 +42,10 @@ class DetailAnnouncementActivity : AppCompatActivity() {
 
     private val editAnnouncementLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // El ViewModel ya tiene la lógica de refresco y chequeo de acciones
-            // Aquí solo se notifica que la edición terminó, el ViewModel se encargará.
             Toast.makeText(this, "Anuncio editado. Refrescando...", Toast.LENGTH_SHORT).show()
-            val announcementId = intent.getStringExtra("announcement") ?: "" // Re-obtener el ID
+            val announcementId = intent.getStringExtra("announcement") ?: ""
             if (announcementId.isNotEmpty()) {
-                detailAnnouncementViewModel.loadAnnouncementDetails(announcementId) // Forzar recarga si hubo edición
+                detailAnnouncementViewModel.loadAnnouncementDetails(announcementId)
             }
         }
     }
@@ -67,7 +54,6 @@ class DetailAnnouncementActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: DetailAnnouncementActivity iniciada.")
 
-        // Configurar el Toolbar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
 
@@ -79,41 +65,30 @@ class DetailAnnouncementActivity : AppCompatActivity() {
         announcementRepository = AnnouncementRepository(database.announcementDao())
         commentRepository = CommentRepository(database.commentDao())
 
-        // --- NUEVO: Inicializar DetailAnnouncementViewModel con un Factory ---
         val factory = DetailAnnouncementViewModelFactory(auth, storage, userRepository, announcementRepository, commentRepository)
         detailAnnouncementViewModel = ViewModelProvider(this, factory)[DetailAnnouncementViewModel::class.java]
-        // --- FIN NUEVO ---
 
-        // Obtener el ID del anuncio del Intent y pasárselo al ViewModel para que inicie la carga
         val announcementId = intent.getStringExtra("announcement")
         if (announcementId == null) {
             Toast.makeText(this, "Error: ID de Anuncio no proporcionado.", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
-        detailAnnouncementViewModel.loadAnnouncementDetails(announcementId) // Iniciar carga del anuncio en el ViewModel
+        detailAnnouncementViewModel.loadAnnouncementDetails(announcementId)
 
-        // --- Observar el uiState del ViewModel ---
         lifecycleScope.launch {
             detailAnnouncementViewModel.uiState.collectLatest { uiState ->
-                // Mostrar Toasts para mensajes de estado (el ViewModel no tiene contexto)
                 uiState.statusMessage?.let { message ->
                     Toast.makeText(this@DetailAnnouncementActivity, message, Toast.LENGTH_SHORT).show()
-                    // Si es un mensaje de éxito/error no persistente, lo podemos limpiar en el ViewModel
-                    // detailAnnouncementViewModel.setStatusMessage(null) // Si el ViewModel tiene este método
                 }
 
-                // Manejar la eliminación del anuncio (navegar hacia atrás)
                 if (uiState.announcementDeleted) {
                     Toast.makeText(this@DetailAnnouncementActivity, "Anuncio eliminado correctamente.", Toast.LENGTH_SHORT).show()
-                    finish() // Cierra esta Activity y vuelve a la anterior
-                    detailAnnouncementViewModel.announcementDeletionCompleted() // Resetea la bandera
+                    finish()
+                    detailAnnouncementViewModel.announcementDeletionCompleted()
                 }
             }
         }
-        // --- FIN Observación ---
-
-        // --- Configurar la UI con Jetpack Compose ---
         setContent {
             MaterialTheme {
                 val uiState by detailAnnouncementViewModel.uiState.collectAsState()
@@ -123,22 +98,19 @@ class DetailAnnouncementActivity : AppCompatActivity() {
                     onCommentInputChange = { detailAnnouncementViewModel.onCommentInputChange(it) },
                     onSendCommentClick = { detailAnnouncementViewModel.addComment() },
                     onEditClick = {
-                        // Aquí, el ViewModel ya tiene el anuncio cargado
                         detailAnnouncementViewModel.uiState.value.announcement?.let { announcement ->
                             val intent = Intent(this@DetailAnnouncementActivity, AddAnnouncementActivity::class.java)
-                            intent.putExtra("EDIT_ANNOUNCEMENT", announcement.id) // Pasar el ID del anuncio
+                            intent.putExtra("EDIT_ANNOUNCEMENT", announcement.id)
                             editAnnouncementLauncher.launch(intent)
                         }
                     },
                     onDeleteClick = {
-                        // El ViewModel expone un evento o muestra un diálogo de confirmación.
-                        // Aquí, la Activity aún maneja el AlertDialog por ser componente de Android.
                         detailAnnouncementViewModel.uiState.value.announcement?.let { announcement ->
                             AlertDialog.Builder(this@DetailAnnouncementActivity)
                                 .setTitle("Eliminar Anuncio")
                                 .setMessage("¿Estás seguro de que quieres eliminar este anuncio: '${announcement.title}'?")
                                 .setPositiveButton("Sí") { dialog, which ->
-                                    detailAnnouncementViewModel.deleteAnnouncement() // Llama al ViewModel para eliminar
+                                    detailAnnouncementViewModel.deleteAnnouncement()
                                 }
                                 .setNegativeButton("No", null)
                                 .show()
@@ -149,7 +121,6 @@ class DetailAnnouncementActivity : AppCompatActivity() {
                 )
             }
         }
-        // --- FIN Configuración UI con Compose ---
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -162,7 +133,4 @@ class DetailAnnouncementActivity : AppCompatActivity() {
         intent.putExtra(UserProfilePreviewActivity.EXTRA_USER_ID, userId)
         startActivity(intent)
     }
-
-    // ELIMINADO: Todas las funciones de lógica (checkAuthorActions, deleteAnnouncement, loadCurrentUserProfile, addComment, loadComments)
-    // Se han movido al DetailAnnouncementViewModel.
 }

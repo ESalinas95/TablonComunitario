@@ -1,4 +1,4 @@
-package com.example.tabloncomunitario // ¡IMPORTANTE! Asegúrate de que este sea tu nombre de paquete correcto
+package com.example.tabloncomunitario
 
 import android.app.Activity
 import android.content.Intent
@@ -15,37 +15,18 @@ import com.example.tabloncomunitario.database.AppDatabase
 import com.example.tabloncomunitario.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import com.example.tabloncomunitario.databinding.ActivityEditProfileBinding // Mantener si aún usas XML para esta Activity
-// ELIMINADO: import com.example.tabloncomunitario.ui.profile_edit.EditProfileScreen // Si ya estás migrando a Compose
-// ELIMINADO: import com.example.tabloncomunitario.ui.profile_edit.EditProfileUiState // Si ya estás migrando a Compose
-// ELIMINADO: import androidx.compose.runtime.getValue
-// ELIMINADO: import androidx.compose.runtime.mutableStateOf
-// ELIMINADO: import androidx.compose.runtime.setValue
-// ELIMINADO: import androidx.compose.material3.MaterialTheme
-// ELIMINADO: import androidx.activity.compose.setContent // Si ya estás migrando a Compose
-
+import com.example.tabloncomunitario.databinding.ActivityEditProfileBinding
 import kotlinx.coroutines.launch
 
 class EditProfileActivity : AppCompatActivity() {
 
-    // Si estás migrando a Compose, estas variables de estado se moverían al ViewModel y la Activity usaria setContent
-    // private var selectedImageUriState: Uri? by mutableStateOf(null)
-    // private var isLoadingState: Boolean by mutableStateOf(false)
-    // private var statusMessageState: String? by mutableStateOf(null)
-    // private var displayNameInputState: String by mutableStateOf("")
-    // private var contactNumberInputState: String by mutableStateOf("")
-    // private var dniNumberInputState: String by mutableStateOf("")
-    // private var apartmentNumberInputState: String by mutableStateOf("")
-    // private var aboutMeInputState: String by mutableStateOf("")
-
-    // Si sigues en Views (XML binding)
     private lateinit var binding: ActivityEditProfileBinding
 
     private lateinit var auth: FirebaseAuth
     private lateinit var storage: FirebaseStorage
     private lateinit var userRepository: UserRepository
 
-    private var selectedImageUri: Uri? = null // Para la Activity basada en Views
+    private var selectedImageUri: Uri? = null
     private var currentUserProfile: User? = null
 
     companion object {
@@ -54,9 +35,9 @@ class EditProfileActivity : AppCompatActivity() {
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            selectedImageUri = result.data?.data // Actualiza la variable de la Activity
+            selectedImageUri = result.data?.data
             selectedImageUri?.let {
-                binding.imageViewProfile.visibility = View.VISIBLE // Asegura que el ImageView esté visible
+                binding.imageViewProfile.visibility = View.VISIBLE
                 Glide.with(this).load(it).into(binding.imageViewProfile)
                 Log.d(TAG, "Imagen seleccionada: $it")
             } ?: Log.w(TAG, "No se recibió URI de imagen al seleccionar.")
@@ -67,11 +48,9 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Si sigues en Views (XML binding)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Configuración del Toolbar
         setSupportActionBar(binding.toolbarEditProfile)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""
@@ -102,9 +81,6 @@ class EditProfileActivity : AppCompatActivity() {
         return true
     }
 
-    /**
-     * Carga el perfil del usuario actual desde Room.
-     */
     private fun loadUserProfile() {
         val userId = auth.currentUser?.uid
         if (userId != null) {
@@ -115,7 +91,6 @@ class EditProfileActivity : AppCompatActivity() {
                         // Campos de solo lectura
                         binding.editTextDisplayName.setText(user.displayName)
                         binding.editTextSetupDocumentNumber.setText(user.documentNumber)
-
                         // Campos editables
                         binding.editTextSetupContactNumber.setText(user.contactNumber)
                         binding.editTextSetupApartmentNumber.setText(user.apartmentNumber)
@@ -125,7 +100,7 @@ class EditProfileActivity : AppCompatActivity() {
                         if (!user.profileImageUrl.isNullOrEmpty()) {
                             // Cargar la imagen remota
                             Glide.with(this@EditProfileActivity).load(user.profileImageUrl).into(binding.imageViewProfile)
-                            // Actualizar selectedImageUri si quieres que el "Guardar" la mantenga sin resubir
+
                             selectedImageUri = Uri.parse(user.profileImageUrl)
                         }
                         Log.d(TAG, "Perfil de usuario cargado desde Room para edición: ${user.displayName}")
@@ -156,9 +131,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Guarda (actualiza) el perfil del usuario en Room.
-     */
     private fun saveUserProfile() {
         val userId = auth.currentUser?.uid ?: run {
             Toast.makeText(this, "Usuario no autenticado.", Toast.LENGTH_SHORT).show()
@@ -201,22 +173,16 @@ class EditProfileActivity : AppCompatActivity() {
             // --- FIN CAMBIO CLAVE ---
         } else {
             Log.d(TAG, "No hay nueva imagen de perfil. Guardando solo datos.")
-            userToUpdate.profileImageUrl = currentUserProfile?.profileImageUrl // Mantener la URL existente
+            userToUpdate.profileImageUrl = currentUserProfile?.profileImageUrl
             saveUserToRoom(userToUpdate)
         }
     }
 
-    /**
-     * Sube la imagen de perfil a Firebase Storage y luego guarda el perfil en Room.
-     * @param userId UID del usuario.
-     * @param user El objeto User con los datos actualizados (sin la nueva URL de imagen aún).
-     * @param imageUri La URI local de la imagen seleccionada.
-     */
-    private fun uploadProfileImage(userId: String, user: User, imageUri: Uri) { // <--- CAMBIO CLAVE AQUÍ: Añadido imageUri
+    private fun uploadProfileImage(userId: String, user: User, imageUri: Uri) {
         val storageRef = storage.reference
         val profileImageRef = storageRef.child("profile_images/$userId.jpg")
 
-        profileImageRef.putFile(imageUri) // Usar el imageUri pasado como parámetro
+        profileImageRef.putFile(imageUri)
             .addOnSuccessListener { taskSnapshot ->
                 Log.d(TAG, "Imagen de perfil subida a Storage: ${taskSnapshot.metadata?.path}")
                 profileImageRef.downloadUrl.addOnSuccessListener { downloadUri ->
@@ -243,9 +209,6 @@ class EditProfileActivity : AppCompatActivity() {
             }
     }
 
-    /**
-     * Guarda el objeto User actualizado en Room.
-     */
     private fun saveUserToRoom(user: User) {
         lifecycleScope.launch {
             try {

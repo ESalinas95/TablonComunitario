@@ -1,7 +1,5 @@
-// ui/profile/ProfileScreen.kt (o ui/screens/ProfileScreen.kt)
-package com.example.tabloncomunitario.ui.auth // O tu paquete ui.screens
+package com.example.tabloncomunitario.ui.auth
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.* // Usando Material 3
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,10 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.tabloncomunitario.Announcement
-import com.example.tabloncomunitario.R // Importa tu R para los drawables (ej. ic_back_arrow)
-import com.example.tabloncomunitario.User // Importa tu User
-import com.example.tabloncomunitario.ui.components.AnnouncementCard // Importa tu AnnouncementCard
-import com.example.tabloncomunitario.viewmodel.ProfileUiState // Importa ProfileUiState
+import com.example.tabloncomunitario.R
+import com.example.tabloncomunitario.User
+import com.example.tabloncomunitario.ui.components.AnnouncementCard
+import com.example.tabloncomunitario.viewmodel.ProfileUiState
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -37,14 +35,14 @@ fun ProfileScreen(
     uiState: ProfileUiState,
     onEditProfileClick: () -> Unit,
     onAnnouncementClick: (Announcement) -> Unit,
-    onNavigateBack: () -> Unit // <--- NUEVO CALLBACK PARA EL BOTÓN DE RETROCESO
+    onNavigateBack: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Mi Perfil") }, // Título de la pantalla
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) { // <--- BOTÓN DE RETROCESO
+                    IconButton(onClick = onNavigateBack) {
                         Icon(painterResource(id = R.drawable.ic_back_arrow), contentDescription = "Atrás")
                     }
                 },
@@ -55,9 +53,8 @@ fun ProfileScreen(
                 )
             )
         }
-    ) { paddingValues -> // paddingValues es crucial para el contenido debajo del TopAppBar
+    ) { paddingValues ->
         Column(
-            // Aplicar el padding del Scaffold al Column principal
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
@@ -66,7 +63,7 @@ fun ProfileScreen(
             // Sección de Header/Información del Usuario
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primary // Color de la ActionBar/Toolbar
+                color = MaterialTheme.colorScheme.primary
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -164,7 +161,6 @@ fun ProfileScreen(
     }
 }
 
-// (Preview para Android Studio y AnnouncementCard Composables - sin cambios)
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
@@ -190,7 +186,7 @@ fun ProfileScreenPreview() {
         ),
         onEditProfileClick = {},
         onAnnouncementClick = {},
-        onNavigateBack = {} // Añadir el callback para el Preview
+        onNavigateBack = {}
     )
 }
 

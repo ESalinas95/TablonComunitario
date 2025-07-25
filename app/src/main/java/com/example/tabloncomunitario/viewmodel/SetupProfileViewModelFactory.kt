@@ -1,9 +1,8 @@
-package com.example.tabloncomunitario.viewmodel // O tu paquete de ViewModels
+package com.example.tabloncomunitario.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.tabloncomunitario.repository.UserRepository
-import com.example.tabloncomunitario.viewmodel.SetupProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 

@@ -1,9 +1,6 @@
-// ui/profile_preview/UserProfilePreviewScreen.kt
-package com.example.tabloncomunitario.ui.auth // <--- ¡PAQUETE CORREGIDO AQUÍ!
+package com.example.tabloncomunitario.ui.auth
 
-import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -15,16 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign // Importar TextAlign
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.example.tabloncomunitario.R // Importa tu R para los drawables
-import com.example.tabloncomunitario.User // Importa tu User
-import com.example.tabloncomunitario.viewmodel.UserProfilePreviewUiState // <--- ¡IMPORTACIÓN CORRECTA DE UIState!
-
-// ELIMINADO: La data class UserProfilePreviewUiState ya no va aquí.
-// Debe estar en el archivo de tu ViewModel (UserProfilePreviewViewModel.kt)
+import com.example.tabloncomunitario.R
+import com.example.tabloncomunitario.User
+import com.example.tabloncomunitario.viewmodel.UserProfilePreviewUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,11 +47,10 @@ fun UserProfilePreviewScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(24.dp), // Padding general para el contenido
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center // Centrar verticalmente si no hay mucho contenido
+            verticalArrangement = Arrangement.Center
         ) {
-            // Indicador de carga
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.size(48.dp))
             } else if (uiState.statusMessage != null && uiState.statusMessage.isNotEmpty()) {

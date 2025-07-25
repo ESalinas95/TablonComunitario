@@ -1,8 +1,8 @@
-package com.example.tabloncomunitario.repository // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.repository
 
-import com.example.tabloncomunitario.Announcement // Importa tu clase Announcement
-import com.example.tabloncomunitario.database.AnnouncementDao // Importa tu AnnouncementDao
-import kotlinx.coroutines.flow.Flow // Importa Flow
+import com.example.tabloncomunitario.Announcement
+import com.example.tabloncomunitario.database.AnnouncementDao
+import kotlinx.coroutines.flow.Flow
 
 class AnnouncementRepository(private val announcementDao: AnnouncementDao) {
 

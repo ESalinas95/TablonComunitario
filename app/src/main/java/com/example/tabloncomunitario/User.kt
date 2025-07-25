@@ -1,14 +1,14 @@
 package com.example.tabloncomunitario
 
 import android.os.Parcelable
-import androidx.room.Entity // Importar Entity
-import androidx.room.PrimaryKey // Importar PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-@Entity(tableName = "users") // <--- Anotación Entity, define el nombre de la tabla
+@Entity(tableName = "users")
 @Parcelize
 data class User(
-    @PrimaryKey // <--- Define 'uid' como clave primaria
+    @PrimaryKey
     var uid: String = "",
     var displayName: String = "",
     var email: String = "",

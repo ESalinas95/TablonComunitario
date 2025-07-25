@@ -1,8 +1,7 @@
-package com.example.tabloncomunitario.viewmodel // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tabloncomunitario.Announcement
 import com.example.tabloncomunitario.Comment
@@ -18,10 +17,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await // Importar await para operaciones Firebase
-import java.util.Date
+import kotlinx.coroutines.tasks.await
 
-// Mueve esta data class (DetailAnnouncementUiState) de ui.announcement_detail.DetailAnnouncementScreen.kt a este archivo
 data class DetailAnnouncementUiState(
     val announcement: Announcement? = null,
     val comments: List<Comment> = emptyList(),
@@ -29,8 +26,8 @@ data class DetailAnnouncementUiState(
     val isLoading: Boolean = false,
     val statusMessage: String? = null,
     val isAuthor: Boolean = false,
-    val canEditDelete: Boolean = true, // Si se puede editar/eliminar (no tiene comentarios)
-    val announcementDeleted: Boolean = false // Bandera para navegar si se elimina
+    val canEditDelete: Boolean = true,
+    val announcementDeleted: Boolean = false
 )
 
 class DetailAnnouncementViewModel(
@@ -51,7 +48,6 @@ class DetailAnnouncementViewModel(
         private const val TAG = "DetailAnnouncementVM"
     }
 
-    // Llama a esto desde el Composable (ej. LaunchedEffect) para inicializar
     fun loadAnnouncementDetails(announcementId: String) {
         currentAnnouncementId = announcementId
         _uiState.value = _uiState.value.copy(isLoading = true, statusMessage = null)
@@ -128,9 +124,6 @@ class DetailAnnouncementViewModel(
             return
         }
 
-        // En un ViewModel, el AlertDialog no se muestra directamente.
-        // El ViewModel debería exponer un evento para que la Activity muestre la confirmación.
-        // Por ahora, asumimos que la UI ya confirmó y procedemos.
         viewModelScope.launch {
             try {
                 commentRepository.getCommentsForAnnouncement(announcementId)
@@ -221,7 +214,7 @@ class DetailAnnouncementViewModel(
             try {
                 commentRepository.insertComment(comment)
                 Log.d(TAG, "Comentario añadido a Room.")
-                _uiState.value = _uiState.value.copy(commentInput = "", statusMessage = "Comentario enviado.") // Limpiar input y mostrar éxito
+                _uiState.value = _uiState.value.copy(commentInput = "", statusMessage = "Comentario enviado.")
             } catch (e: Exception) {
                 Log.e(TAG, "Error al añadir comentario a Room: ${e.message}", e)
                 _uiState.value = _uiState.value.copy(statusMessage = "Error al enviar comentario: ${e.message}")

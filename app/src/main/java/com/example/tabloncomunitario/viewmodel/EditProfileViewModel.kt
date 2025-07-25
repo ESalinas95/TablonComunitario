@@ -1,9 +1,8 @@
-package com.example.tabloncomunitario.viewmodel // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.viewmodel
 
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tabloncomunitario.User
 import com.example.tabloncomunitario.repository.UserRepository
@@ -12,12 +11,8 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await // Importar await para operaciones Firebase
-//import com.example.tabloncomunitario.imagePickResultFlow // Importar el Flow de resultados (desde MainActivity)
-//import com.example.tabloncomunitario.imagePickRequestChannel // Importar el Channel de peticiones (a MainActivity)
-
+import kotlinx.coroutines.tasks.await
 
 data class EditProfileUiState(
     val userProfile: User? = null,
@@ -29,7 +24,7 @@ data class EditProfileUiState(
     val aboutMeInput: String = "",
     val isLoading: Boolean = false,
     val statusMessage: String? = null,
-    val navigateToProfile: Boolean = false // Bandera para navegar de vuelta al perfil
+    val navigateToProfile: Boolean = false
 )
 
 class EditProfileViewModel(

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.tabloncomunitario.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 
+
 class AuthViewModelFactory(
     private val auth: FirebaseAuth,
     private val userRepository: UserRepository

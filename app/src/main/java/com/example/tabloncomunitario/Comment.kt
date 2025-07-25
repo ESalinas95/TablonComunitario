@@ -1,11 +1,10 @@
 package com.example.tabloncomunitario
 
 import android.os.Parcelable
-import androidx.room.Entity // Importar Entity
-import androidx.room.PrimaryKey // Importar PrimaryKey
-import androidx.room.ForeignKey // Importar ForeignKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.ForeignKey
 import kotlinx.parcelize.Parcelize
-import java.util.Date
 
 @Entity(tableName = "comments",
     foreignKeys = [
@@ -24,14 +23,14 @@ import java.util.Date
     ])
 @Parcelize
 data class Comment(
-    @PrimaryKey(autoGenerate = true) // <--- Define 'id' como clave primaria auto-generada
-    var id: Long = 0, // Id ahora es Long y auto-generado por Room
-    var announcementId: String = "", // FK al anuncio
-    var authorId: String = "",       // FK al usuario
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0,
+    var announcementId: String = "",
+    var authorId: String = "",
     var authorDisplayName: String = "",
     var authorProfileImageUrl: String? = null,
     var text: String = "",
-    var timestamp: Long? = null // <--- Cambiado de Date a Long
+    var timestamp: Long? = null
 ) : Parcelable {
     constructor() : this(0, "", "", "", null, "", null) // Ajusta el constructor
 }

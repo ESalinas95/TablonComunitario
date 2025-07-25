@@ -1,39 +1,23 @@
-// ui/main/MainScreen.kt (o ui/screens/MainScreen.kt)
 package com.example.tabloncomunitario.ui.auth
 
-import android.net.Uri
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.* // Usando Material 3
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
 import com.example.tabloncomunitario.Announcement
-import com.example.tabloncomunitario.R
-import com.example.tabloncomunitario.User
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import com.example.tabloncomunitario.ui.components.AnnouncementCard // O la ruta a tu nuevo archivo
+import com.example.tabloncomunitario.ui.components.AnnouncementCard
 import com.example.tabloncomunitario.viewmodel.MainUiState
 
-@OptIn(ExperimentalMaterial3Api::class) // Para TopAppBar y SearchBar
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     uiState: MainUiState,
@@ -54,9 +38,9 @@ fun MainScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        // <--- CAMBIO CLAVE AQUÍ: windowInsetsPadding directo en el Row
-                        .windowInsetsPadding(WindowInsets.statusBars) // Esto empuja el contenido del Row hacia abajo
-                        .height(56.dp) // Altura estándar de un TopAppBar
+
+                        .windowInsetsPadding(WindowInsets.statusBars)
+                        .height(56.dp)
                         .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -96,12 +80,10 @@ fun MainScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Aplicar padding del Scaffold (esto incluye la barra superior)
+                .padding(paddingValues)
                 .padding(horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // ... (resto del contenido de la pantalla sin cambios) ...
-            // Barra de búsqueda
             OutlinedTextField(
                 value = uiState.searchQuery,
                 onValueChange = onSearchQueryChange,

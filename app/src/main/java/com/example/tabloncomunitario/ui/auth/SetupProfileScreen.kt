@@ -1,28 +1,18 @@
 package com.example.tabloncomunitario.ui.auth
 
-import android.net.Uri
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
-import com.example.tabloncomunitario.R
 import com.example.tabloncomunitario.User
-import com.example.tabloncomunitario.viewmodel.SetupProfileUiState // Importar SetupProfileUiState
+import com.example.tabloncomunitario.viewmodel.SetupProfileUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,30 +35,12 @@ fun SetupProfileScreen(
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título de la pantalla (puedes añadir un TopAppBar si quieres la flecha de retroceso aquí)
         Text(
             text = "Completa tu Perfil",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
-        // --- ELIMINADA: Sección de Foto de Perfil ---
-        // Image(
-        //     painter = if (uiState.profileImageUri != null) { /* ... */ } else { /* ... */ },
-        //     contentDescription = "Foto de Perfil",
-        //     modifier = Modifier.size(120.dp).clip(CircleShape).clickable(enabled = !uiState.isLoading) { onSelectImageClick() },
-        //     contentScale = ContentScale.Crop
-        // )
-        // Spacer(Modifier.height(8.dp))
-        // Button(
-        //     onClick = onSelectImageClick,
-        //     enabled = !uiState.isLoading,
-        //     modifier = Modifier.fillMaxWidth().height(48.dp)
-        // ) { Text("Seleccionar Foto") }
-        // Spacer(Modifier.height(24.dp))
-        // --- FIN ELIMINADA ---
-
-        // Campos de texto (mantener paddingTop si se eliminan elementos de arriba)
         OutlinedTextField(
             value = uiState.displayNameInput,
             onValueChange = onDisplayNameChange,
@@ -78,7 +50,6 @@ fun SetupProfileScreen(
             singleLine = true
         )
 
-        // ... (resto de campos de texto y botón de guardar - sin cambios) ...
         OutlinedTextField(
             value = uiState.contactNumberInput,
             onValueChange = onContactNumberChange,
@@ -139,7 +110,6 @@ fun SetupProfileScreen(
     }
 }
 
-// Preview para Android Studio (actualiza para que no necesite profileImageUri)
 @Preview(showBackground = true)
 @Composable
 fun SetupProfileScreenPreview() {
@@ -149,7 +119,6 @@ fun SetupProfileScreenPreview() {
         documentNumber = "1234567",
         apartmentNumber = "5B",
         aboutMe = "Me gusta programar en Compose"
-        // profileImageUrl ya no es parte de la preview UiState aquí
     )
     SetupProfileScreen(
         uiState = SetupProfileUiState(

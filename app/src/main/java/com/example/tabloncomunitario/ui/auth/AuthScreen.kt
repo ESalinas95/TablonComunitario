@@ -1,19 +1,18 @@
-// ui/auth/AuthScreen.kt
 package com.example.tabloncomunitario.ui.auth
 
-import androidx.compose.foundation.Image // Importa Image
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource // Importa painterResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.tabloncomunitario.R // Importa tu R para los drawables
+import com.example.tabloncomunitario.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,15 +32,13 @@ fun AuthScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // --- NUEVO: Logo encima del correo ---
         Image(
-            painter = painterResource(id = R.drawable.ic_logo), // Usa el ID de tu nuevo logo
+            painter = painterResource(id = R.drawable.ic_logo),
             contentDescription = "Logo de la Aplicación",
-            modifier = Modifier.size(120.dp) // Ajusta el tamaño según necesites
+            modifier = Modifier.size(120.dp)
         )
 
-        Spacer(Modifier.height(32.dp)) // Espacio entre el logo y el campo de email
-        // --- FIN NUEVO ---
+        Spacer(Modifier.height(32.dp))
 
         // Campo de correo electrónico
         OutlinedTextField(

@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-// (AnnouncementCard Composable - sin cambios)
 @Composable
 fun AnnouncementCard(announcement: Announcement, onAnnouncementClick: (Announcement) -> Unit) {
     Card(

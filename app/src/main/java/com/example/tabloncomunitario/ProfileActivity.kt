@@ -11,22 +11,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.tabloncomunitario.database.AppDatabase
 import com.example.tabloncomunitario.repository.AnnouncementRepository
 import com.example.tabloncomunitario.repository.UserRepository
-import com.example.tabloncomunitario.ui.auth.ProfileScreen // El Composable de la UI
+import com.example.tabloncomunitario.ui.auth.ProfileScreen
 import com.example.tabloncomunitario.viewmodel.ProfileViewModel
-import com.example.tabloncomunitario.viewmodel.ProfileViewModelFactory // Importa tu Factory
+import com.example.tabloncomunitario.viewmodel.ProfileViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var userRepository: UserRepository
     private lateinit var announcementRepository: AnnouncementRepository
-    private lateinit var profileViewModel: ProfileViewModel // Instancia del ViewModel
+    private lateinit var profileViewModel: ProfileViewModel
 
     companion object {
         private const val TAG = "ProfileActivity"
@@ -36,7 +34,6 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate: ProfileActivity iniciada.")
 
-        // Configuración del Toolbar (sigue siendo manejado por la Activity para compatibilidad)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Mi Perfil" // El título del Toolbar
 
@@ -45,7 +42,6 @@ class ProfileActivity : AppCompatActivity() {
         userRepository = UserRepository(database.userDao())
         announcementRepository = AnnouncementRepository(database.announcementDao())
 
-        // Inicializar ProfileViewModel con un Factory
         val factory = ProfileViewModelFactory(auth, userRepository, announcementRepository)
         profileViewModel = ViewModelProvider(this, factory)[ProfileViewModel::class.java]
 
@@ -65,11 +61,6 @@ class ProfileActivity : AppCompatActivity() {
         }
         onBackPressedDispatcher.addCallback(this, callback)
 
-        // Cargar y observar datos desde Room
-        // loadAndDisplayUserProfile(currentUser.uid) // -> Ahora lo maneja el ViewModel
-        // loadMyAnnouncements(currentUser.uid)      // -> Ahora lo maneja el ViewModel
-
-        // --- Configurar la UI con Jetpack Compose ---
         setContent {
             MaterialTheme {
                 val uiState = profileViewModel.uiState.collectAsState().value
@@ -78,16 +69,14 @@ class ProfileActivity : AppCompatActivity() {
                     uiState = uiState,
                     onEditProfileClick = { navigateToEditProfile() },
                     onAnnouncementClick = { announcement -> navigateToAnnouncementDetails(announcement) },
-                    onNavigateBack = { onBackPressedDispatcher.onBackPressed() } // <--- PASAR EL CALLBACK
+                    onNavigateBack = { onBackPressedDispatcher.onBackPressed() }
                 )
 
-                // Llamar a loadProfileAndAnnouncements desde el LaunchedEffect del Composable
                 LaunchedEffect(currentUser.uid) {
                     profileViewModel.loadProfileAndAnnouncements(currentUser.uid)
                 }
             }
         }
-        // --- FIN Configuración UI con Compose ---
     }
 
     override fun onSupportNavigateUp(): Boolean {

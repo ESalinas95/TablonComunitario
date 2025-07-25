@@ -1,9 +1,8 @@
-package com.example.tabloncomunitario.viewmodel // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.viewmodel
 
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tabloncomunitario.Announcement
 import com.example.tabloncomunitario.User
@@ -14,12 +13,10 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest // Importar collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await // Importar await para operaciones Firebase
-import java.util.UUID // Para generar IDs de anuncios si es necesario
+import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
-// Data class para el estado de la UI
 data class AddAnnouncementUiState(
     val headerText: String = "Crear Nuevo Anuncio",
     val titleInput: String = "",
@@ -27,7 +24,7 @@ data class AddAnnouncementUiState(
     val selectedImageUri: Uri? = null,
     val isLoading: Boolean = false,
     val statusMessage: String? = null,
-    val navigateToDetailsOrMain: Boolean = false // Bandera para navegación de vuelta
+    val navigateToDetailsOrMain: Boolean = false
 )
 
 class AddAnnouncementViewModel(
@@ -49,11 +46,10 @@ class AddAnnouncementViewModel(
         private const val TAG = "AddAnnouncementVM"
     }
 
-    // Llama a esto desde el Composable (ej. LaunchedEffect) para inicializar
     fun initialize(announcementId: String?) {
         _uiState.value = _uiState.value.copy(isLoading = true, statusMessage = null)
         viewModelScope.launch {
-            loadCurrentUserProfile() // Cargar perfil al inicio
+            loadCurrentUserProfile()
             if (announcementId != null) {
                 // Modo edición
                 val announcement = announcementRepository.getAnnouncementById(announcementId)
@@ -110,12 +106,8 @@ class AddAnnouncementViewModel(
         }
     }
 
-    // Funciones para actualizar el estado de los campos de entrada
     fun onTitleChange(title: String) { _uiState.value = _uiState.value.copy(titleInput = title, statusMessage = null) }
     fun onDescriptionChange(description: String) { _uiState.value = _uiState.value.copy(descriptionInput = description, statusMessage = null) }
-
-    // --- ESTA ES LA FUNCIÓN onSelectImageClick que actualiza el UiState con la URI ---
-    // También es llamada desde init{} cuando llega el resultado de la Activity
     fun onSelectImageClick(uri: Uri?) {
         _uiState.value = _uiState.value.copy(selectedImageUri = uri, statusMessage = null)
         Log.d(TAG, "onSelectImageClick: ViewModel recibió URI del picker: $uri. Actualizando UiState.")

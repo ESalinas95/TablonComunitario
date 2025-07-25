@@ -1,5 +1,4 @@
-// ui/profile_edit/EditProfileScreen.kt (o ui/screens/EditProfileScreen.kt)
-package com.example.tabloncomunitario.ui.auth // O tu paquete ui.screens
+package com.example.tabloncomunitario.ui.auth
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -171,7 +170,6 @@ fun EditProfileScreen(
     }
 }
 
-// Preview para Android Studio
 @Preview(showBackground = true)
 @Composable
 fun EditProfileScreenPreview() {

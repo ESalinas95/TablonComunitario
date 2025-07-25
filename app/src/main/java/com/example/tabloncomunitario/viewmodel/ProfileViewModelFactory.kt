@@ -1,11 +1,9 @@
-// viewmodel/profile/ProfileViewModelFactory.kt
-package com.example.tabloncomunitario.viewmodel // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.tabloncomunitario.repository.AnnouncementRepository
 import com.example.tabloncomunitario.repository.UserRepository
-import com.example.tabloncomunitario.viewmodel.ProfileViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 class ProfileViewModelFactory(

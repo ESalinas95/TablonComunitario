@@ -1,35 +1,25 @@
-package com.example.tabloncomunitario.viewmodel // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.viewmodel
 
-import android.net.Uri // Mantener si User.profileImageUrl aún usa Uri.parse
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.tabloncomunitario.User
 import com.example.tabloncomunitario.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage // Mantener si lo usas en otros ViewModels
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await // Mantener si lo usas en otros ViewModels
-
-// --- ELIMINADAS: Importaciones de los canales/flows globales ---
-// import com.example.tabloncomunitario.imagePickResultFlow
-// import com.example.tabloncomunitario.imagePickRequestChannel
-// import kotlinx.coroutines.flow.collectLatest
-// --- FIN ELIMINADAS ---
 
 
 // Define el estado de la UI para la pantalla de configuración de perfil
 data class SetupProfileUiState(
     val displayNameInput: String = "",
     val contactNumberInput: String = "",
-    val documentNumberInput: String = "", // Usado como documentNumber
+    val documentNumberInput: String = "",
     val apartmentNumberInput: String = "",
     val aboutMeInput: String = "",
-    // ELIMINADO: val profileImageUri: Uri? = null // Ya no es parte del UiState aquí
     val isLoading: Boolean = false,
     val statusMessage: String? = null,
     val navigateToMain: Boolean = false
@@ -37,7 +27,7 @@ data class SetupProfileUiState(
 
 class SetupProfileViewModel(
     private val auth: FirebaseAuth,
-    private val storage: FirebaseStorage, // Mantener si lo usas en otros ViewModels
+    private val storage: FirebaseStorage,
     private val userRepository: UserRepository
 ) : ViewModel() {
 
@@ -46,29 +36,12 @@ class SetupProfileViewModel(
 
     private var currentUserId: String? = null
     private var currentUserEmail: String? = null
-    private var loadedUserProfile: User? = null // Para mantener el perfil completo cargado/existente
-
-    // ELIMINADO: private val IMAGE_PICK_REQUEST_ID = "SetupProfileImagePick" // Ya no se usa
+    private var loadedUserProfile: User? = null
 
     companion object {
         private const val TAG = "SetupProfileViewModel"
     }
 
-    // --- ELIMINADO: Bloque init para observar resultados de selección de imagen ---
-    // init {
-    //     Log.d(TAG, "ViewModel inicializado. Observando resultados de selección de imagen.")
-    //     viewModelScope.launch {
-    //         imagePickResultFlow.collectLatest { (requestId, uri) ->
-    //             if (requestId == IMAGE_PICK_REQUEST_ID) {
-    //                 onProfileImageResult(uri)
-    //                 Log.d(TAG, "Resultado de imagen recibido para SetupProfileScreen: $uri")
-    //             }
-    //         }
-    //     }
-    // }
-    // --- FIN ELIMINADO ---
-
-    // Inicializa el ViewModel con el UID y Email del usuario (llamado desde la Activity)
     fun initialize(userId: String?, userEmail: String?) {
         currentUserId = userId
         currentUserEmail = userEmail
@@ -86,7 +59,6 @@ class SetupProfileViewModel(
                             documentNumberInput = user.documentNumber.orEmpty(),
                             apartmentNumberInput = user.apartmentNumber.orEmpty(),
                             aboutMeInput = user.aboutMe.orEmpty()
-                            // ELIMINADO: profileImageUri = user.profileImageUrl?.let { Uri.parse(it) }
                         )
                         Log.d(TAG, "initialize: Perfil existente cargado: ${user.displayName}. URI de imagen cargada: ${user.profileImageUrl}")
                     }
@@ -103,14 +75,7 @@ class SetupProfileViewModel(
     fun onDocumentNumberChange(document: String) { _uiState.value = _uiState.value.copy(documentNumberInput = document, statusMessage = null) }
     fun onApartmentNumberChange(apt: String) { _uiState.value = _uiState.value.copy(apartmentNumberInput = apt, statusMessage = null) }
     fun onAboutMeChange(about: String) { _uiState.value = _uiState.value.copy(aboutMeInput = about, statusMessage = null) }
-
-    // --- ELIMINADO: Función para procesar resultado de imagen ---
-    // fun onProfileImageResult(uri: Uri?) { /* ... */ }
-    // --- FIN ELIMINADO ---
-
-    // --- ELIMINADO: Función para pedir selección de imagen ---
     fun requestImagePick() { /* ... */ }
-    // --- FIN ELIMINADO ---
 
     fun saveProfileInformation() {
         val userId = currentUserId
@@ -139,23 +104,10 @@ class SetupProfileViewModel(
         )
 
         viewModelScope.launch {
-            // ELIMINADO: Lógica de selección de imagen. Siempre guarda sin imagen en este ViewModel.
-            // if (_uiState.value.profileImageUri != null && _uiState.value.profileImageUri != getExistingProfileImageUrlAsUri()) {
-            //     uploadProfileImageAndSave(userId, user, _uiState.value.profileImageUri!!)
-            // } else {
-            //     user.profileImageUrl = getExistingProfileImageUrlAsUri()?.toString()
-            //     saveUserToRoom(user)
-            // }
             user.profileImageUrl = loadedUserProfile?.profileImageUrl // Mantiene la URL existente si había una cargada
             saveUserToRoom(user)
         }
     }
-
-    // ELIMINADO: private fun getExistingProfileImageUrlAsUri(): Uri? { /* ... */ }
-
-    // --- ELIMINADO: Función de subida de imagen ---
-    // private suspend fun uploadProfileImageAndSave(userId: String, user: User, imageUri: Uri) { /* ... */ }
-    // --- FIN ELIMINADO ---
 
     private suspend fun saveUserToRoom(user: User) {
         try {

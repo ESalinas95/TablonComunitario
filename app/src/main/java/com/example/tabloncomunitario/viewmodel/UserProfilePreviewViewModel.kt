@@ -1,18 +1,15 @@
-// viewmodel/profile_preview/UserProfilePreviewViewModel.kt
-package com.example.tabloncomunitario.viewmodel // Asegúrate de que el paquete sea correcto
+package com.example.tabloncomunitario.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.tabloncomunitario.User // Importar tu data class User
-import com.example.tabloncomunitario.repository.UserRepository // Importar UserRepository
+import com.example.tabloncomunitario.User
+import com.example.tabloncomunitario.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// Mueve esta data class (UserProfilePreviewUiState) de ui.profile_preview.UserProfilePreviewScreen.kt a este archivo
 data class UserProfilePreviewUiState(
     val userProfile: User? = null,
     val isLoading: Boolean = false,
@@ -30,9 +27,7 @@ class UserProfilePreviewViewModel(
         private const val TAG = "UserProfilePreviewVM"
     }
 
-    // Llama a esta función desde el Composable (ej. LaunchedEffect) para cargar el perfil
     fun loadUserProfile(userId: String) {
-        // Solo cargar si no está ya cargado o en proceso de carga para este userId
         if (_uiState.value.userProfile?.uid != userId || (_uiState.value.userProfile == null && !_uiState.value.isLoading)) {
             _uiState.value = _uiState.value.copy(isLoading = true, statusMessage = "Cargando perfil...")
             Log.d(TAG, "loadUserProfile: Iniciando carga de perfil para ID: $userId (desde Room).")

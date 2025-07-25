@@ -1,5 +1,4 @@
-// ui/add_announcement/AddAnnouncementScreen.kt
-package com.example.tabloncomunitario.ui.auth // <--- Asegúrate de que el paquete sea este (ui.add_announcement)
+package com.example.tabloncomunitario.ui.auth
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -9,7 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.* // Usando Material 3
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,12 +20,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.example.tabloncomunitario.R // Importa tu R para los drawables
-import com.example.tabloncomunitario.viewmodel.AddAnnouncementUiState // <--- ¡CAMBIA ESTA LÍNEA!
+import com.example.tabloncomunitario.R
+import com.example.tabloncomunitario.viewmodel.AddAnnouncementUiState
 
-// ELIMINADO: La data class AddAnnouncementUiState ya no va aquí.
-// Debe estar en AddAnnouncementViewModel.kt
-// data class AddAnnouncementUiState(...) { ... } <--- ¡BORRA ESTO!
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,12 +33,12 @@ fun AddAnnouncementScreen(
     onDescriptionChange: (String) -> Unit,
     onSelectImageClick: () -> Unit,
     onPublishClick: () -> Unit,
-    onNavigateBack: () -> Unit // Para el botón de retroceso
+    onNavigateBack: () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(uiState.headerText) }, // Título dinámico
+                title = { Text(uiState.headerText) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(painterResource(id = R.drawable.ic_back_arrow), contentDescription = "Atrás")
@@ -61,7 +58,7 @@ fun AddAnnouncementScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .verticalScroll(scrollState)
-                .padding(24.dp), // Padding general del formulario
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Campo: Título del Anuncio
@@ -137,8 +134,6 @@ fun AddAnnouncementScreen(
 @Preview(showBackground = true)
 @Composable
 fun AddAnnouncementScreenPreview() {
-    // Necesitas crear una instancia de AddAnnouncementUiState aquí para el preview
-    // Asumiendo que User es una data class en tu proyecto
     val sampleUiState = AddAnnouncementUiState(
         headerText = "Crear Nuevo Anuncio",
         titleInput = "Título de prueba",

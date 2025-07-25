@@ -1,22 +1,19 @@
-package com.example.tabloncomunitario // Ajusta tu paquete
+package com.example.tabloncomunitario
 
-import com.example.tabloncomunitario.Announcement
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide // Necesitarás añadir Glide para cargar imágenes
+import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AnnouncementAdapter(private val announcements: MutableList<Announcement>) :
     RecyclerView.Adapter<AnnouncementAdapter.AnnouncementViewHolder>() {
 
-    // ViewHolder para cada ítem del RecyclerView
     class AnnouncementViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.textViewTitle)
         val descriptionTextView: TextView = itemView.findViewById(R.id.textViewDescription)
@@ -35,12 +32,10 @@ class AnnouncementAdapter(private val announcements: MutableList<Announcement>) 
         holder.titleTextView.text = announcement.title
         holder.descriptionTextView.text = announcement.description
 
-        // Formatear la fecha
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
         val dateString = announcement.timestamp?.let { dateFormat.format(it) } ?: "Fecha desconocida"
         holder.authorDateTextView.text = "Publicado por: ${announcement.authorEmail} el $dateString"
 
-        // Cargar imagen con Glide si existe
         if (!announcement.imageUrl.isNullOrEmpty()) {
             holder.announcementImageView.visibility = View.VISIBLE
             Glide.with(holder.itemView.context)
@@ -53,7 +48,6 @@ class AnnouncementAdapter(private val announcements: MutableList<Announcement>) 
             holder.announcementImageView.visibility = View.GONE
         }
 
-        // Aquí puedes añadir un setOnClickListener para la tarjeta si quieres ver los detalles del anuncio
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, DetailAnnouncementActivity::class.java)
             intent.putExtra("announcement", announcement) // Pasa el objeto Parcelable
@@ -63,10 +57,9 @@ class AnnouncementAdapter(private val announcements: MutableList<Announcement>) 
 
     override fun getItemCount(): Int = announcements.size
 
-    // Función para actualizar los datos del adaptador
     fun updateAnnouncements(newAnnouncements: List<Announcement>) {
         announcements.clear()
         announcements.addAll(newAnnouncements)
-        notifyDataSetChanged() // Notificar al RecyclerView que los datos han cambiado
+        notifyDataSetChanged()
     }
 }
