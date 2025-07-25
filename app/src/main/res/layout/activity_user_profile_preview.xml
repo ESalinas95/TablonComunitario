@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true" tools:context=".UserProfilePreviewActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarProfilePreview"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator"> <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Perfil del Usuario"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewProfilePreview"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_default_profile"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FF000000"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/textViewDisplayNamePreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:text="Nombre de Usuario"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/textViewEmailPreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            tools:text="email@ejemplo.com"
+            android:textColor="?android:attr/textColorSecondary"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/textViewApartmentPreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="Departamento: N/A"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/textViewContactPreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="Contacto: N/A"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:id="@+id/textViewAboutPreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            tools:text="Acerca de: No especificado"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:paddingHorizontal="16dp" />
+
+        <TextView
+            android:id="@+id/textViewProfileStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text=""
+            android:textColor="@android:color/holo_blue_dark" />
+
+    </LinearLayout>
+</LinearLayout>
