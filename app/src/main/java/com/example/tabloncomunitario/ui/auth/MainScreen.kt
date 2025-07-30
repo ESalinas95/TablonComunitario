@@ -2,7 +2,6 @@ package com.example.tabloncomunitario.ui.auth
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -16,6 +15,20 @@ import androidx.compose.ui.unit.dp
 import com.example.tabloncomunitario.Announcement
 import com.example.tabloncomunitario.ui.components.AnnouncementCard
 import com.example.tabloncomunitario.viewmodel.MainUiState
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import com.example.tabloncomunitario.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,16 +42,13 @@ fun MainScreen(
 ) {
     Scaffold(
         topBar = {
-            // Replicamos la cabecera personalizada de MainActivity
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.primary
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-
                         .windowInsetsPadding(WindowInsets.statusBars)
                         .height(56.dp)
                         .padding(horizontal = 16.dp),
@@ -93,7 +103,6 @@ fun MainScreen(
                     .padding(vertical = 8.dp)
             )
 
-            // Lista de anuncios
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             } else if (uiState.statusMessage != null && uiState.statusMessage.isNotEmpty()) {
@@ -102,12 +111,12 @@ fun MainScreen(
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )
-            } else if (uiState.allAnnouncements.isEmpty() && uiState.searchQuery.isEmpty()) {
+            } else if (uiState.filteredAnnouncements.isEmpty() && uiState.searchQuery.isEmpty()) { // <--- CAMBIO CLAVE AQUÍ
                 Text(
                     text = "Aún no hay anuncios publicados.",
                     modifier = Modifier.padding(16.dp)
                 )
-            } else if (uiState.allAnnouncements.isEmpty() && uiState.searchQuery.isNotEmpty()) {
+            } else if (uiState.filteredAnnouncements.isEmpty() && uiState.searchQuery.isNotEmpty()) { // <--- CAMBIO CLAVE AQUÍ
                 Text(
                     text = "No se encontraron anuncios para '${uiState.searchQuery}'.",
                     modifier = Modifier.padding(16.dp)
@@ -115,7 +124,7 @@ fun MainScreen(
             }
             else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(uiState.allAnnouncements) { announcement ->
+                    items(uiState.filteredAnnouncements) { announcement -> // <--- CAMBIO CLAVE: Muestra filteredAnnouncements
                         AnnouncementCard(announcement = announcement, onAnnouncementClick = onAnnouncementClick)
                     }
                 }
@@ -135,6 +144,7 @@ fun MainScreenPreview() {
         uiState = MainUiState(
             welcomeMessage = "Bienvenido, Juan!",
             allAnnouncements = sampleAnnouncements,
+            filteredAnnouncements = sampleAnnouncements,
             searchQuery = "",
             isLoading = false
         ),

@@ -1,22 +1,18 @@
 package com.example.tabloncomunitario.viewmodel
 
-import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tabloncomunitario.User
 import com.example.tabloncomunitario.repository.UserRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.launch // Mantener si usas viewModelScope.launch
 
 data class EditProfileUiState(
     val userProfile: User? = null,
-    val selectedImageUri: Uri? = null,
     val displayNameInput: String = "",
     val contactNumberInput: String = "",
     val documentNumberInput: String = "",
@@ -29,7 +25,6 @@ data class EditProfileUiState(
 
 class EditProfileViewModel(
     private val auth: FirebaseAuth,
-    private val storage: FirebaseStorage,
     private val userRepository: UserRepository
 ) : ViewModel() {
 
@@ -37,9 +32,7 @@ class EditProfileViewModel(
     val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()
 
     private var currentUserId: String? = null
-    private var loadedUserProfile: User? = null // Para mantener el perfil completo cargado/existente
-
-    private val IMAGE_PICK_REQUEST_ID = "EditProfileImagePick"
+    private var loadedUserProfile: User? = null
 
     companion object {
         private const val TAG = "EditProfileViewModel"
@@ -47,28 +40,24 @@ class EditProfileViewModel(
 
     fun loadUserProfile(userId: String) {
         currentUserId = userId
-        // Cargar solo si el perfil no ha sido cargado o si el userId ha cambiado y no está cargando
         if (loadedUserProfile?.uid != userId || (loadedUserProfile == null && !_uiState.value.isLoading)) {
             _uiState.value = _uiState.value.copy(isLoading = true, statusMessage = "Cargando perfil...")
             viewModelScope.launch {
                 try {
                     val user = userRepository.getUserById(userId)
-                    loadedUserProfile = user // <--- Cachar el perfil cargado
+                    loadedUserProfile = user
 
                     _uiState.value = _uiState.value.copy(
                         userProfile = user,
-                        displayNameInput = user?.displayName.orEmpty(), // Pre-llenar campos de entrada
+                        displayNameInput = user?.displayName.orEmpty(),
                         contactNumberInput = user?.contactNumber.orEmpty(),
                         documentNumberInput = user?.documentNumber.orEmpty(),
                         apartmentNumberInput = user?.apartmentNumber.orEmpty(),
-                        aboutMeInput = user?.aboutMe.orEmpty(),
-                        selectedImageUri = user?.profileImageUrl?.let { Uri.parse(it) }, // Cargar URI existente para previsualizar si hay
-                        isLoading = false,
-                        statusMessage = null // Limpiar mensaje de estado
+                        aboutMeInput = user?.aboutMe.orEmpty()
                     )
 
                     user?.let {
-                        Log.d(TAG, "Perfil de usuario cargado desde Room para edición: ${it.displayName}")
+                        Log.d(TAG, "Perfil de usuario cargado desde Room para edición: ${it.displayName}. URI de imagen cargada: ${it.profileImageUrl}")
                     } ?: run {
                         Log.w(TAG, "Perfil de usuario no encontrado en Room para edición: $userId.")
                         _uiState.value = _uiState.value.copy(statusMessage = "Perfil no encontrado en la base de datos local.")
@@ -85,20 +74,13 @@ class EditProfileViewModel(
         }
     }
 
-    // Funciones para actualizar el estado de los campos de entrada
     fun onContactNumberChange(number: String) { _uiState.value = _uiState.value.copy(contactNumberInput = number, statusMessage = null) }
     fun onApartmentNumberChange(apt: String) { _uiState.value = _uiState.value.copy(apartmentNumberInput = apt, statusMessage = null) }
     fun onAboutMeChange(about: String) { _uiState.value = _uiState.value.copy(aboutMeInput = about, statusMessage = null) }
 
-    // Este método recibe el resultado de la selección de imagen de la Activity
-    fun onProfileImageResult(uri: Uri?) {
-        _uiState.value = _uiState.value.copy(selectedImageUri = uri, statusMessage = null)
-        Log.d(TAG, "onProfileImageResult: ViewModel recibió URI del picker: $uri. Actualizando UiState.")
-    }
-
     fun saveUserProfile() {
         val userId = currentUserId
-        val currentProfile = loadedUserProfile // Usa el perfil cacheado
+        val currentProfile = loadedUserProfile
         if (userId == null || currentProfile == null) {
             _uiState.value = _uiState.value.copy(statusMessage = "Error: Usuario no autenticado o perfil no cargado.")
             return
@@ -127,43 +109,8 @@ class EditProfileViewModel(
         )
 
         viewModelScope.launch {
-            val selectedUriFromUiState = _uiState.value.selectedImageUri
-            val existingProfileImageUrl = loadedUserProfile?.profileImageUrl?.let { Uri.parse(it) }
-
-            if (selectedUriFromUiState != null && selectedUriFromUiState != existingProfileImageUrl) {
-                Log.d(TAG, "Imagen de perfil seleccionada/cambiada. Iniciando subida.")
-                uploadProfileImageAndSave(userId, userToUpdate, selectedUriFromUiState)
-            } else {
-                Log.d(TAG, "No hay nueva imagen de perfil. Guardando solo datos.")
-                userToUpdate.profileImageUrl = existingProfileImageUrl?.toString()
-                saveUserToRoom(userToUpdate)
-            }
-        }
-    }
-
-    private suspend fun uploadProfileImageAndSave(userId: String, user: User, imageUri: Uri) {
-        val profileImageRef = storage.reference.child("profile_images/$userId.jpg")
-
-        try {
-            _uiState.value = _uiState.value.copy(statusMessage = "Subiendo imagen: 0%")
-            val uploadTask = profileImageRef.putFile(imageUri)
-            uploadTask.addOnProgressListener { snapshot ->
-                val progress = (100.0 * snapshot.bytesTransferred / snapshot.totalByteCount).toInt()
-                _uiState.value = _uiState.value.copy(statusMessage = "Subiendo imagen: $progress%")
-            }.await()
-
-            val downloadUri = profileImageRef.downloadUrl.await()
-            Log.d(TAG, "Imagen de perfil subida a Storage: $downloadUri")
-
-            user.profileImageUrl = downloadUri.toString()
-            saveUserToRoom(user)
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Error al subir la imagen de perfil: ${e.message}", e)
-            _uiState.value = _uiState.value.copy(
-                isLoading = false,
-                statusMessage = "Error al subir imagen: ${e.message}"
-            )
+            userToUpdate.profileImageUrl = loadedUserProfile?.profileImageUrl
+            saveUserToRoom(userToUpdate)
         }
     }
 

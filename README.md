@@ -42,7 +42,7 @@ Diagrama: Relación entre los componentes de la aplicación.
 
 ![img_2.png](img_2.png)
 
-Manuel de usuario.
+Manual de usuario.
 
 1. Inicio de la Aplicación:
 
@@ -60,9 +60,9 @@ Manuel de usuario.
 2.2. Si el registro es exitoso, se te redirigirá a la pantalla "Completa tu Perfil".
 ![img_4.png](img_4.png)
 
-2.3. En esta pantalla, ingresa tu "Nombre a Mostrar", "Número de Contacto", "Número de DNI", "Número de Departamento/Casa" y "Acerca de mí".
-    Haz clic en "Guardar y Continuar" para finalizar la configuración inicial de tu perfil.
-    (Nota: La selección de foto de perfil en esta pantalla no está implementada en esta versión.)
+2.3. En esta pantalla, ingresa tu "Nombre a Mostrar", "Número de Contacto", "Número de DNI", "Número de Departamento/Casa" y "Acerca de mí". 
+Haz clic en "Guardar y Continuar" para finalizar la configuración inicial de tu perfil.
+(Nota: La selección de foto de perfil en esta pantalla no está implementada en esta versión.)
 ![img_5.png](img_5.png)
 
 3. Inicio de Sesión:
@@ -75,8 +75,8 @@ Manuel de usuario.
 
 4. Pantalla Principal de Anuncios:
 
-4.1. Aquí verás un listado de todos los anuncios publicados por los miembros de la comunidad.
-     Buscar Anuncios: Utiliza la barra de búsqueda en la parte superior para filtrar anuncios por título.
+4.1. Aquí verás un listado de todos los anuncios publicados por los miembros de la comunidad. 
+Buscar Anuncios: Utiliza la barra de búsqueda en la parte superior para filtrar anuncios por título y autor.
 ![img_7.png](img_7.png)
 
 4.2. Añadir Nuevo Anuncio: Haz clic en el botón flotante + en la esquina inferior derecha para crear una nueva publicación.
@@ -86,7 +86,7 @@ Manuel de usuario.
 5. Mi Perfil:
 
 5.1. Desde la Pantalla Principal de Anuncios, haz clic en "Mi Perfil" en la cabecera.
-    Verás tu información de perfil y una lista de los anuncios que has publicado.
+Verás tu información de perfil y una lista de los anuncios que has publicado.
 ![img_10.png](img_10.png)
 
 5.2. Editar Perfil: Haz clic en "EDITAR PERFIL" para modificar tu número de contacto, número de departamento, 

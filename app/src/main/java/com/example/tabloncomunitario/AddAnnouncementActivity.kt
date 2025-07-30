@@ -1,11 +1,9 @@
 package com.example.tabloncomunitario
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.compose.runtime.getValue
@@ -27,22 +25,13 @@ import kotlinx.coroutines.launch
 class AddAnnouncementActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var storage: FirebaseStorage
+    private lateinit var storage: FirebaseStorage // Se mantiene si se usa para eliminar imágenes
     private lateinit var userRepository: UserRepository
     private lateinit var announcementRepository: AnnouncementRepository
-    private lateinit var addAnnouncementViewModel: AddAnnouncementViewModel
+    private lateinit var addAnnouncementViewModel: AddAnnouncementViewModel // Instancia del ViewModel
 
     companion object {
         private const val TAG = "AddAnnouncementActivity"
-    }
-
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            addAnnouncementViewModel.onSelectImageClick(result.data?.data)
-            Log.d(TAG, "Imagen seleccionada desde Activity: ${result.data?.data}")
-        } else {
-            Log.d(TAG, "Selección de imagen cancelada desde Activity.")
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,12 +48,11 @@ class AddAnnouncementActivity : AppCompatActivity() {
         userRepository = UserRepository(database.userDao())
         announcementRepository = AnnouncementRepository(database.announcementDao())
 
-        val factory = AddAnnouncementViewModelFactory(auth, storage, userRepository, announcementRepository)
+        val factory = AddAnnouncementViewModelFactory(auth, userRepository, announcementRepository)
         addAnnouncementViewModel = ViewModelProvider(this, factory)[AddAnnouncementViewModel::class.java]
 
         val announcementId = intent.getStringExtra("EDIT_ANNOUNCEMENT")
         addAnnouncementViewModel.initialize(announcementId)
-
 
         lifecycleScope.launch {
             addAnnouncementViewModel.uiState.collectLatest { uiState ->
@@ -88,7 +76,6 @@ class AddAnnouncementActivity : AppCompatActivity() {
                     uiState = uiState,
                     onTitleChange = { addAnnouncementViewModel.onTitleChange(it) },
                     onDescriptionChange = { addAnnouncementViewModel.onDescriptionChange(it) },
-                    onSelectImageClick = { openImageChooser() },
                     onPublishClick = { addAnnouncementViewModel.saveAnnouncementInformation() },
                     onNavigateBack = { onBackPressedDispatcher.onBackPressed() }
                 )
@@ -99,18 +86,5 @@ class AddAnnouncementActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
-    }
-
-    private fun openImageChooser() {
-        Log.d(TAG, "openImageChooser: Iniciando selector de imágenes.")
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        if (intent.resolveActivity(packageManager) != null) {
-            pickImageLauncher.launch(intent)
-            Log.d(TAG, "openImageChooser: Intent lanzado para seleccionar imagen.")
-        } else {
-            Toast.makeText(this, "No se encontró aplicación para seleccionar imágenes.", Toast.LENGTH_LONG).show()
-            Log.e(TAG, "openImageChooser: No se encontró aplicación para manejar el Intent ACTION_GET_CONTENT.")
-        }
     }
 }
